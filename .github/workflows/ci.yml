@@ -1,0 +1,52 @@
+name: CI - Validação e Testes
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  rust-tests:
+    name: Rust - Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Instalar Rust (stable)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache de dependências Cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            pocs/01_crud_livros/target/
+            pocs/02_crud_livros_web/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build - CRUD Livros (CLI)
+        working-directory: pocs/01_crud_livros
+        run: cargo build --verbose
+
+      - name: Testes BDD (Cucumber) - CRUD Livros
+        working-directory: pocs/01_crud_livros
+        run: cargo test --test cucumber --verbose
+
+      - name: Build - CRUD Livros Web
+        working-directory: pocs/02_crud_livros_web
+        run: cargo build --verbose
+
+      - name: Validação de estrutura
+        run: |
+          echo "========================================="
+          echo "  Estrutura do repositório:"
+          echo "========================================="
+          find . -not -path './.git/*' -not -path '*/target/*' -not -path './.git' | sort | head -80
+          echo ""
+          echo "CI finalizado com sucesso."

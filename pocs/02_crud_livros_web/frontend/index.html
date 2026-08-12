@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CRUD de Livros — Interface web conectada a um backend Rust com Axum">
+    <title>📚 CRUD de Livros — Rust + Axum</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════
+           DESIGN SYSTEM — Inspirado em Discord/Linear
+           Dark mode + Glassmorphism + Micro-animations
+           ═══════════════════════════════════════════ */
+
+        :root {
+            --bg-primary: #0f0f13;
+            --bg-secondary: #16161d;
+            --bg-card: rgba(26, 26, 36, 0.7);
+            --bg-card-hover: rgba(32, 32, 46, 0.8);
+            --bg-input: rgba(20, 20, 30, 0.8);
+            --border: rgba(255, 255, 255, 0.06);
+            --border-focus: rgba(99, 102, 241, 0.5);
+            --text-primary: #e8e8ed;
+            --text-secondary: #8b8b9e;
+            --text-muted: #5c5c72;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --accent-glow: rgba(99, 102, 241, 0.15);
+            --success: #22c55e;
+            --success-bg: rgba(34, 197, 94, 0.1);
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.1);
+            --danger-hover: #dc2626;
+            --warning: #f59e0b;
+            --warning-bg: rgba(245, 158, 11, 0.1);
+            --rust-orange: #f97316;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background gradient animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 80%, rgba(249, 115, 22, 0.05) 0%, transparent 50%);
+            animation: bgShift 20s ease-in-out infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes bgShift {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-5%, -5%) rotate(3deg); }
+        }
+
+        /* ═══ HEADER ═══ */
+        header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(15, 15, 19, 0.8);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), var(--rust-orange));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .logo h1 {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .logo h1 span {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+
+        .tech-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(249, 115, 22, 0.1);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--rust-orange);
+        }
+
+        .tech-badge::before {
+            content: '🦀';
+            font-size: 14px;
+        }
+
+        /* ═══ MAIN LAYOUT ═══ */
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 32px;
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 24px;
+            min-height: calc(100vh - 89px);
+        }
+
+        /* ═══ FORM PANEL ═══ */
+        .form-panel {
+            position: sticky;
+            top: 113px;
+            height: fit-content;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            overflow: hidden;
+            transition: border-color var(--transition);
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header h2 {
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            transition: all var(--transition);
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 11px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+        }
+
+        /* ═══ BOOKS LIST ═══ */
+        .list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .list-header h2 {
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge {
+            background: var(--accent-glow);
+            color: var(--accent);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .search-bar {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 14px 10px 36px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: all var(--transition);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235c5c72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 12px center;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .books-list {
+            list-style: none;
+            max-height: calc(100vh - 300px);
+            overflow-y: auto;
+        }
+
+        .books-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .books-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .books-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .book-item {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all var(--transition);
+            animation: slideIn 300ms ease-out;
+            cursor: default;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .book-item:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .book-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .book-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .book-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .book-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+
+        .book-item:hover .book-actions {
+            opacity: 1;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 14px;
+        }
+
+        .btn-edit {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+
+        .btn-edit:hover {
+            background: rgba(245, 158, 11, 0.2);
+            transform: scale(1.05);
+        }
+
+        .btn-delete {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* ═══ EMPTY STATE ═══ */
+        .empty-state {
+            padding: 60px 24px;
+            text-align: center;
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* ═══ TOAST NOTIFICATIONS ═══ */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .toast {
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid;
+            animation: toastIn 300ms ease-out, toastOut 300ms ease-in 2700ms forwards;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast-success {
+            background: var(--success-bg);
+            border-color: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .toast-error {
+            background: var(--danger-bg);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(16px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateY(0) scale(1); }
+            to { opacity: 0; transform: translateY(-8px) scale(0.95); }
+        }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 800px) {
+            main {
+                grid-template-columns: 1fr;
+                padding: 16px;
+            }
+            .form-panel {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header>
+    <div class="header-content">
+        <div class="logo">
+            <div class="logo-icon">📚</div>
+            <h1>CRUD de Livros <span>IFSP — TTEC 2026</span></h1>
+        </div>
+        <div class="tech-badge">Rust + Axum</div>
+    </div>
+</header>
+
+<!-- ═══ MAIN ═══ -->
+<main>
+
+    <!-- PAINEL DO FORMULÁRIO (esquerda) -->
+    <div class="form-panel">
+        <div class="card">
+            <div class="card-header">
+                <h2 id="form-title">✏️ Inserir Livro</h2>
+            </div>
+            <div class="card-body">
+                <form id="livro-form" onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="titulo">Título</label>
+                        <input type="text" id="titulo" placeholder="Ex: O Hobbit" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="autor">Autor</label>
+                        <input type="text" id="autor" placeholder="Ex: J.R.R. Tolkien" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editora">Editora</label>
+                        <input type="text" id="editora" placeholder="Ex: HarperCollins" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="paginas">Páginas</label>
+                        <input type="number" id="paginas" placeholder="Ex: 336" min="1" max="4294967295" required>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="btn-submit" onclick="salvar()">
+                            ＋ Inserir
+                        </button>
+                        <button class="btn btn-secondary" id="btn-cancel" onclick="cancelarEdicao()" style="display:none;">
+                            ✕ Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAINEL DA LISTA (direita) -->
+    <div>
+        <div class="card">
+            <div class="list-header">
+                <h2>📖 Biblioteca</h2>
+                <span class="badge" id="total-badge">0 livros</span>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="busca" placeholder="Buscar por título, autor ou editora..." oninput="filtrarLista()">
+            </div>
+            <ul class="books-list" id="books-list">
+                <li class="empty-state" id="empty-state">
+                    <div class="icon">📭</div>
+                    <p>Nenhum livro cadastrado ainda.<br>Use o formulário para começar!</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</main>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+    // ══════════════════════════════════════════════════════════
+    // API BASE URL
+    // ══════════════════════════════════════════════════════════
+    const API = '/api/livros';
+
+    // Estado: se estamos editando, guardamos o título original
+    let editandoTitulo = null;
+
+    // ══════════════════════════════════════════════════════════
+    // CARREGAR LIVROS (GET /api/livros)
+    // ══════════════════════════════════════════════════════════
+    async function carregarLivros() {
+        try {
+            const res = await fetch(API);
+            const livros = await res.json();
+            renderizarLista(livros);
+        } catch (e) {
+            toast('Erro ao conectar com o servidor', 'error');
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // RENDERIZAR LISTA
+    // ══════════════════════════════════════════════════════════
+    function renderizarLista(livros) {
+        const lista = document.getElementById('books-list');
+        const badge = document.getElementById('total-badge');
+        const busca = document.getElementById('busca').value.toLowerCase();
+
+        // Filtra localmente pela busca
+        const filtrados = livros.filter(l =>
+            l.titulo.toLowerCase().includes(busca) ||
+            l.autor.toLowerCase().includes(busca) ||
+            l.editora.toLowerCase().includes(busca)
+        );
+
+        badge.textContent = `${livros.length} livro${livros.length !== 1 ? 's' : ''}`;
+
+        if (filtrados.length === 0) {
+            lista.innerHTML = `
+                <li class="empty-state">
+                    <div class="icon">${livros.length === 0 ? '📭' : '🔍'}</div>
+                    <p>${livros.length === 0
+                        ? 'Nenhum livro cadastrado ainda.<br>Use o formulário para começar!'
+                        : 'Nenhum resultado encontrado.'}</p>
+                </li>`;
+            return;
+        }
+
+        lista.innerHTML = filtrados.map(livro => `
+            <li class="book-item">
+                <div class="book-info">
+                    <div class="book-title">${escapeHtml(livro.titulo)}</div>
+                    <div class="book-meta">
+                        <span>✍️ ${escapeHtml(livro.autor)}</span>
+                        <span>🏢 ${escapeHtml(livro.editora)}</span>
+                        <span>📄 ${livro.paginas} págs</span>
+                    </div>
+                </div>
+                <div class="book-actions">
+                    <button class="btn-icon btn-edit" title="Editar" onclick="editar('${escapeJs(livro.titulo)}')">✏️</button>
+                    <button class="btn-icon btn-delete" title="Apagar" onclick="apagar('${escapeJs(livro.titulo)}')">🗑️</button>
+                </div>
+            </li>
+        `).join('');
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // SALVAR (CREATE ou UPDATE)
+    // ══════════════════════════════════════════════════════════
+    async function salvar() {
+        const paginasVal = parseInt(document.getElementById('paginas').value) || 0;
+
+        const livro = {
+            titulo:  document.getElementById('titulo').value.trim(),
+            autor:   document.getElementById('autor').value.trim(),
+            editora: document.getElementById('editora').value.trim(),
+            paginas: paginasVal,
+        };
+
+        if (!livro.titulo || !livro.autor || !livro.editora || livro.paginas < 1) {
+            toast('Preencha todos os campos corretamente!', 'error');
+            return;
+        }
+        
+        if (livro.paginas > 4294967295) {
+            toast('O número de páginas é muito grande!', 'error');
+            return;
+        }
+
+        try {
+            let res;
+            if (editandoTitulo) {
+                // UPDATE (PUT)
+                res = await fetch(`${API}/${encodeURIComponent(editandoTitulo)}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(livro),
+                });
+            } else {
+                // CREATE (POST)
+                res = await fetch(API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(livro),
+                });
+            }
+
+            if (res.ok) {
+                toast(editandoTitulo ? `'${livro.titulo}' atualizado!` : `'${livro.titulo}' inserido!`, 'success');
+                cancelarEdicao();
+                carregarLivros();
+            } else {
+                const erro = await res.text();
+                toast(erro || 'Erro ao salvar', 'error');
+            }
+        } catch (e) {
+            toast('Erro de conexão com o servidor', 'error');
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // EDITAR — Preenche o formulário com os dados do livro
+    // ══════════════════════════════════════════════════════════
+    async function editar(titulo) {
+        try {
+            const res = await fetch(`${API}/${encodeURIComponent(titulo)}`);
+            if (!res.ok) { toast('Livro não encontrado', 'error'); return; }
+            const livro = await res.json();
+
+            document.getElementById('titulo').value = livro.titulo;
+            document.getElementById('autor').value = livro.autor;
+            document.getElementById('editora').value = livro.editora;
+            document.getElementById('paginas').value = livro.paginas;
+
+            editandoTitulo = titulo;
+            document.getElementById('form-title').textContent = '🔄 Editando Livro';
+            document.getElementById('btn-submit').textContent = '💾 Salvar';
+            document.getElementById('btn-cancel').style.display = '';
+            document.getElementById('titulo').focus();
+        } catch (e) {
+            toast('Erro ao carregar livro', 'error');
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // APAGAR (DELETE /api/livros/{titulo})
+    // ══════════════════════════════════════════════════════════
+    async function apagar(titulo) {
+        if (!confirm(`Tem certeza que deseja apagar "${titulo}"?`)) return;
+
+        try {
+            const res = await fetch(`${API}/${encodeURIComponent(titulo)}`, { method: 'DELETE' });
+            if (res.ok) {
+                toast(`'${titulo}' removido!`, 'success');
+                carregarLivros();
+            } else {
+                toast('Erro ao apagar', 'error');
+            }
+        } catch (e) {
+            toast('Erro de conexão', 'error');
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // CANCELAR EDIÇÃO — Volta o formulário para modo de inserção
+    // ══════════════════════════════════════════════════════════
+    function cancelarEdicao() {
+        editandoTitulo = null;
+        document.getElementById('livro-form').reset();
+        document.getElementById('form-title').textContent = '✏️ Inserir Livro';
+        document.getElementById('btn-submit').textContent = '＋ Inserir';
+        document.getElementById('btn-cancel').style.display = 'none';
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // FILTRAR LISTA (busca local)
+    // ══════════════════════════════════════════════════════════
+    function filtrarLista() {
+        carregarLivros();
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // TOAST NOTIFICATION
+    // ══════════════════════════════════════════════════════════
+    function toast(msg, tipo) {
+        const container = document.getElementById('toast-container');
+        const el = document.createElement('div');
+        el.className = `toast toast-${tipo}`;
+        el.textContent = msg;
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 3000);
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // HELPERS
+    // ══════════════════════════════════════════════════════════
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    function escapeJs(str) {
+        return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    }
+
+    // Carrega os livros ao abrir a página
+    carregarLivros();
+</script>
+
+</body>
+</html>
