@@ -26,20 +26,20 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            pocs/01_crud_livros/target/
-            pocs/02_crud_livros_web/target/
+            Tópico 1 - TTEC/Exercícios e Laboratórios/01_crud_livros/target/
+            Tópico 1 - TTEC/Exercícios e Laboratórios/02_crud_livros_web/target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Build - CRUD Livros (CLI)
-        working-directory: pocs/01_crud_livros
+        working-directory: Tópico 1 - TTEC/Exercícios e Laboratórios/01_crud_livros
         run: cargo build --verbose
 
       - name: Testes BDD (Cucumber) - CRUD Livros
-        working-directory: pocs/01_crud_livros
+        working-directory: Tópico 1 - TTEC/Exercícios e Laboratórios/01_crud_livros
         run: cargo test --test cucumber --verbose
 
       - name: Build - CRUD Livros Web
-        working-directory: pocs/02_crud_livros_web
+        working-directory: Tópico 1 - TTEC/Exercícios e Laboratórios/02_crud_livros_web
         run: cargo build --verbose
 
       - name: Validação de estrutura
