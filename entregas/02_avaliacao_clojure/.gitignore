@@ -1,0 +1,27 @@
+# Leiningen / Clojure CLI
+/target/
+/classes/
+/checkouts/
+.cpcache/
+*.jar
+*.class
+
+# Leiningen
+.lein-repl-history
+.lein-plugins/
+.lein-failures
+.nrepl-port
+.prepl-port
+pom.xml
+pom.xml.asc
+
+# Editores / IDEs
+.idea/
+*.iml
+.vscode/
+.calva/
+.lsp/
+.clj-kondo/
+
+# Sistema
+.DS_Store

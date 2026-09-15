@@ -7,6 +7,8 @@ Diretório centralizado contendo os artefatos de cada entrega da disciplina.
 | # | Entrega | Data Limite | Status |
 |---|---------|-------------|--------|
 | 01 | [Avaliação Rust — CRUD de Livros](01_avaliacao_rust/) | 11/08/2026 | Entregue |
+| 02 | [Avaliação Clojure — Loja Diária](02_avaliacao_clojure/) | 08/09/2026 | Entregue |
+
 
 ---
 
@@ -31,4 +33,26 @@ Diretório centralizado contendo os artefatos de cada entrega da disciplina.
 ```bash
 cargo run                      # Aplicação CLI
 cargo test --test cucumber     # Testes BDD (Cucumber/Gherkin)
+```
+
+---
+
+## 02 — Avaliação Clojure: Loja Diária
+
+**Integrantes:** Rafael Feltrim e Gustavo Gomes Contiero
+
+### O que foi solicitado
+- Processamento de transações diárias de uma loja (lidas a partir de um arquivo `dados.json`).
+- Geração de informações estratégicas: total de vendas concluídas com sucesso, total de vendas canceladas e saldo do dia.
+- Clientes especiais possuem desconto de 10% aplicado automaticamente.
+
+### O que foi entregue
+- Lógica completa implementada em Clojure.
+- Processamento dos dados estruturados via EDN/JSON.
+- Automação via Leiningen.
+
+### Como executar
+```bash
+cd 02_avaliacao_clojure
+lein run
 ```

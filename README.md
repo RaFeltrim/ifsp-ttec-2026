@@ -17,7 +17,8 @@ ifsp-ttec-2026/
 ├── pocs/                       # Provas de Conceito organizadas por tema
 │   ├── 00_template/            # Template base para novas PoCs
 │   ├── 01_crud_livros/         # CRUD de Livros — CLI (Rust, Vec, Struct, BDD/Cucumber)
-│   └── 02_crud_livros_web/     # CRUD de Livros — Web (Axum + HTML/JS)
+│   ├── 02_crud_livros_web/     # CRUD de Livros — Web (Axum + HTML/JS)
+│   └── 03_avaliacao_clojure/   # Avaliação Clojure — Loja Diária (EDN, JSON, Leiningen)
 └── README.md
 ```
 
@@ -27,6 +28,11 @@ ifsp-ttec-2026/
 |---|------|------------|-----------|
 | 01 | [CRUD Livros (CLI)](pocs/01_crud_livros/) | Rust, Vec, Struct, Cucumber (BDD) | Sistema de gerenciamento de livros via terminal com testes orientados a comportamento |
 | 02 | [CRUD Livros (Web)](pocs/02_crud_livros_web/) | Rust, Axum, HTML, CSS, JavaScript | Versão web do CRUD com API REST e interface gráfica |
+| 03 | [Avaliação Clojure](pocs/03_avaliacao_clojure/) | Clojure, Leiningen, EDN/JSON | Processamento de transações diárias de uma loja a partir de um arquivo JSON |
+
+## Entregas Oficiais
+
+Os artefatos finais enviados para avaliação estão centralizados na pasta [`entregas/`](entregas/).
 
 ## Como Executar
 

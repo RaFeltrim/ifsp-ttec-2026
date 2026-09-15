@@ -1,0 +1,6 @@
+[
+  {"operacao": "venda",        "cliente": "regular",  "valor": 100},
+  {"operacao": "cancelamento", "cliente": "regular",  "valor": 100},
+  {"operacao": "venda",        "cliente": "regular",  "valor": 80},
+  {"operacao": "venda",        "cliente": "especial", "valor": 50}
+]
