@@ -4,11 +4,11 @@ Diretório centralizado contendo os artefatos de cada entrega da disciplina.
 
 ## Entregas Realizadas
 
-| # | Entrega | Data Limite | Status |
-|---|---------|-------------|--------|
-| 01 | [Avaliação Rust — CRUD de Livros](01_avaliacao_rust/) | 11/08/2026 | Entregue |
-| 02 | [Avaliação Clojure — Loja Diária](../../entregas/02_avaliacao_clojure/) | 08/09/2026 | Entregue |
-| 03 | [Avaliação Redes de Proteínas — Avaliação Ramos](../../entregas/03_avaliacao_redes_proteinas/) | 06/10/2026 | Entregue |
+| Sigla | Entrega | Descrição | Data Limite | Nota | Status |
+|:---:|---|---|:---:|:---:|:---:|
+| **T1** | [Avaliação Rust — CRUD de Livros](01_avaliacao_rust/) | CRUD em memória e testes BDD (Cucumber) | 11/08/2026 | **10,00** | Entregue |
+| **T2** | [Avaliação Clojure — Loja Diária](../../entregas/02_avaliacao_clojure/) | Processamento funcional de transações em JSON | 08/09/2026 | **10,00** | Entregue |
+| **T3** | [Palestra Ramos — Redes de Proteínas](../../entregas/03_avaliacao_redes_proteinas/) | Análise topológica e ataque sistemático no LCC | 06/10/2026 | **10,00** | Entregue |
 
 
 ---

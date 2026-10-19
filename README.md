@@ -2,9 +2,23 @@
 
 Repositório acadêmico para armazenamento e organização das **Provas de Conceito (PoCs)** desenvolvidas ao longo da disciplina de Tópicos em Tecnologias Emergentes do Instituto Federal de São Paulo.
 
+## Docente
+- Prof. Carlos José de Almeida Pereira (Carlão) — Prontuário 2362353
+
 ## Integrantes
 - Rafael Feltrim (SC3038734)
 - Gustavo Gomes Contiero (SC3037754)
+
+## Desempenho e Avaliações Oficiais
+
+| Sigla | Tipo | Descrição Oficial | Entrega no Repositório | Data | Nota |
+|:---:|:---:|---|---|:---:|:---:|
+| **T1** | Trabalho | Rust | [01_avaliacao_rust](Tópico%201%20-%20TTEC/Entregas/01_avaliacao_rust/) | 11/08/2026 | **10,00** |
+| **T2** | Trabalho | Clojure | [02_avaliacao_clojure](entregas/02_avaliacao_clojure/) | 08/09/2026 | **10,00** |
+| **T3** | Trabalho | Palestra Ramos | [03_avaliacao_redes_proteinas](entregas/03_avaliacao_redes_proteinas/) | 06/10/2026 | **10,00** |
+| **A1** | Prova | Prova Final | Etapa Final | A definir | *Pendente* |
+
+> **Média da Etapa 1:** **10,00** (Aproveitamento: 100%)
 
 ## Estrutura do Repositório
 
