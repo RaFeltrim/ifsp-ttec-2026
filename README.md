@@ -42,11 +42,17 @@ ifsp-ttec-2026/
 │   └── referencias.md                                        # Bibliografia recomendada e documentações oficiais
 │
 ├── 📁 Tópico 0 - Informacoes Gerais/
-│   └── README.md                                             # Ementa, corpo docente, critérios de avaliação e notas
+│   ├── README.md                                             # Ementa, corpo docente, critérios de avaliação e notas
+│   └── cont01_apresentacao.pdf                               # Slides oficiais — Apresentação da Disciplina
 │
 ├── 📁 Tópico 1 - TTEC/                                       # Módulo 1: Rust e Concorrência
 │   ├── README.md                                             # Panorama do módulo de Rust, Ownership e BDD
 │   ├── 📁 Material de Apoio/
+│   │   ├── cont01_apresentacao.pdf                           # Slides oficiais — Apresentação da Disciplina
+│   │   ├── cont02_rust_parte1.pdf                            # Slides oficiais — Aula 01: Rust Parte 1
+│   │   ├── cont02_rust_parte2.pdf                            # Slides oficiais — Aula 02: Rust Parte 2
+│   │   ├── codigos-fonte.zip                                 # Pacote original compactado dos códigos de aula
+│   │   ├── 📁 codigos-fonte/                                 # Exemplos práticos do docente (01.rs a 33.rs e aleatorio)
 │   │   ├── setup_ambiente.md
 │   │   └── referencias.md
 │   ├── 📁 Exercícios e Laboratórios/

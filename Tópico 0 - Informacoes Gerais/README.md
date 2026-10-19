@@ -49,6 +49,12 @@ O sistema de notas da disciplina é dividido em **Etapa 1 (Trabalhos Práticos)*
 
 ---
 
+## 📑 Material Institucional
+
+- **Apresentação Oficial da Disciplina (PDF):** [`cont01_apresentacao.pdf`](cont01_apresentacao.pdf) — Ementa, metodologia, diretrizes e calendário apresentados pelo Prof. Carlão na Aula 01 (28/07/2026).
+
+---
+
 ## 📁 Organização dos Tópicos no Repositório
 
 ```text

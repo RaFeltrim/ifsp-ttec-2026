@@ -22,6 +22,11 @@ Tópico 1 - TTEC/
 │   └── 📁 02_crud_livros_web/         # Servidor Axum REST + Frontend interativo (HTML/JS)
 │
 └── 📁 Material de Apoio/
+    ├── cont01_apresentacao.pdf        # Slides oficiais — Apresentação da Disciplina
+    ├── cont02_rust_parte1.pdf         # Slides oficiais — Aula 01: Rust Parte 1
+    ├── cont02_rust_parte2.pdf         # Slides oficiais — Aula 02: Rust Parte 2
+    ├── codigos-fonte.zip              # Pacote original compactado dos códigos de aula
+    ├── 📁 codigos-fonte/              # Exemplos de aula do docente (01.rs a 33.rs e aleatorio)
     ├── setup_ambiente.md              # Passo a passo de instalação de rustup e cargo
     └── referencias.md                 # Links para The Rust Book, Rustlings e tutoriais
 ```
