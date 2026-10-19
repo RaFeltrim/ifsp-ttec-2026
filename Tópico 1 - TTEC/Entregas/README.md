@@ -7,7 +7,8 @@ Diretório centralizado contendo os artefatos de cada entrega da disciplina.
 | # | Entrega | Data Limite | Status |
 |---|---------|-------------|--------|
 | 01 | [Avaliação Rust — CRUD de Livros](01_avaliacao_rust/) | 11/08/2026 | Entregue |
-| 02 | [Avaliação Clojure — Loja Diária](02_avaliacao_clojure/) | 08/09/2026 | Entregue |
+| 02 | [Avaliação Clojure — Loja Diária](../../entregas/02_avaliacao_clojure/) | 08/09/2026 | Entregue |
+| 03 | [Avaliação Redes de Proteínas — Avaliação Ramos](../../entregas/03_avaliacao_redes_proteinas/) | 06/10/2026 | Entregue |
 
 
 ---
@@ -56,3 +57,27 @@ cargo test --test cucumber     # Testes BDD (Cucumber/Gherkin)
 cd 02_avaliacao_clojure
 lein run
 ```
+
+---
+
+## 03 — Avaliação Redes de Proteínas e Cancro (Avaliação Ramos)
+
+**Integrantes:** Rafael Feltrim e Gustavo Gomes Contiero  
+**Submissão Oficial:** 06/10/2026 para `carlao2005@ifsp.edu.br`
+
+### O que foi solicitado
+- **Atividade 1:** Análise e distribuição das 4 métricas clássicas de centralidade (Degree, Clustering, Betweenness, Closeness) comparando genes drivers e não-drivers da via DNA Repair através de boxplots.
+- **Atividade 2:** Simulação de ataque individual sistemático para cada um dos 43 genes drivers e medição do impacto ($\Delta B$) na média de betweenness do Maior Componente Conexo (LCC), ranqueando os alvos críticos prioritários.
+
+### O que foi entregue
+- Relatório técnico completo em PDF: [`TTEC_Avaliacao_Ramos_corrigido.pdf`](../../entregas/03_avaliacao_redes_proteinas/TTEC_Avaliacao_Ramos_corrigido.pdf)
+- Notebook Jupyter integrado com Google Colab: [`avaliacao_ramos.ipynb`](../../entregas/03_avaliacao_redes_proteinas/avaliacao_ramos.ipynb)
+- Script Python standalone com execução local: [`avaliacao_ramos.py`](../../entregas/03_avaliacao_redes_proteinas/avaliacao_ramos.py)
+- Gráficos gerados (boxplots e histograma de impactos) e base de dados inclusa em `dados/`.
+
+### Como executar
+```bash
+cd ../../entregas/03_avaliacao_redes_proteinas
+python avaliacao_ramos.py
+```
+
